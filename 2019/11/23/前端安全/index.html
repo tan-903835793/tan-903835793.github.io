@@ -156,7 +156,22 @@
             </div>
             <!-- Post -->
             <div class="typo" style="padding: 3rem;">
-                <h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+                <h1 id="前端安全问题及解决办法"><a href="#前端安全问题及解决办法" class="headerlink" title="前端安全问题及解决办法"></a>前端安全问题及解决办法</h1><h2 id="xss-Cross-site-Scripting-脚本注入攻击"><a href="#xss-Cross-site-Scripting-脚本注入攻击" class="headerlink" title="xss(Cross-site Scripting)脚本注入攻击"></a>xss(Cross-site Scripting)脚本注入攻击</h2><p>核心：恶意脚本注入<br>描述：攻击者通过在目标网站上注入恶意脚本，使之在用户的浏览器上运行。利用这些恶意脚本，攻击者可获取用户的敏感信息如 Cookie、SessionID 等，进而危害数据安全。</p>
+<p>解决方案：<br>1、打开npmjs.com下载xss插件，引入xss插件之后就没有任何问题了。<br>2、将html进行内容转换，或者将<script><iframe>等标签替换掉</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">var HtmlUtil = &#123;</span><br><span class="line">     /*1.用浏览器内部转换器实现html转码*/</span><br><span class="line">     htmlEncode:function (html)&#123;</span><br><span class="line">         //1.首先动态创建一个容器标签元素，如DIV</span><br><span class="line">         var temp = document.createElement (&quot;div&quot;);</span><br><span class="line">         //2.然后将要转换的字符串设置为这个元素的innerText(ie支持)或者textContent(火狐，google支持)</span><br><span class="line">         (temp.textContent != undefined ) ? (temp.textContent = html) : (temp.innerText = html);</span><br><span class="line">         //3.最后返回这个元素的innerHTML，即得到经过HTML编码转换的字符串了</span><br><span class="line">         var output = temp.innerHTML;</span><br><span class="line">         temp = null;</span><br><span class="line">         return output;</span><br><span class="line">     &#125;,</span><br><span class="line">     /*2.用浏览器内部转换器实现html解码*/</span><br><span class="line">     htmlDecode:function (text)&#123;</span><br><span class="line">         //1.首先动态创建一个容器标签元素，如DIV</span><br><span class="line">         var temp = document.createElement(&quot;div&quot;);</span><br><span class="line">         //2.然后将要转换的字符串设置为这个元素的innerHTML(ie，火狐，google都支持)</span><br><span class="line">         temp.innerHTML = text;</span><br><span class="line">        //3.最后返回这个元素的innerText(ie支持)或者textContent(火狐，google支持)，即得到经过HTML解码的字符串了。</span><br><span class="line">        var output = temp.innerText || temp.textContent;</span><br><span class="line">         temp = null;</span><br><span class="line">        return output;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="CSRF-Cross-sit-request-forgery-漏洞"><a href="#CSRF-Cross-sit-request-forgery-漏洞" class="headerlink" title="CSRF(Cross-sit request forgery)漏洞"></a>CSRF(Cross-sit request forgery)漏洞</h2><p>核心：利用用户身份伪造请求<br>描述：利用受害者在被攻击网站已经获取的注册凭证，绕过后台的用户验证，冒充用户对被攻击的网站发送执行某项操作的请求</p>
+<p>解决方案：</p>
+<p>1.增加token验证.因为cookie发送请求的时候会自动增加上，但是token却不会，这样就避免了攻击</p>
+<p>2.Referer验证。页面来源的判断</p>
+<h2 id="iframe安全隐患问题"><a href="#iframe安全隐患问题" class="headerlink" title="iframe安全隐患问题"></a>iframe安全隐患问题</h2><p>有时候前端页面为了显示别人的网站或者一些组件的时候，就用iframe来引入进来，比如嵌入一些广告等等。但是有些iframe安全性我们无法去评估测试，有时候会携带一些第三方的插件啊，或者嵌入了一下不安全的脚本啊，这些都是值得我们去考虑的。</p>
+<p>解决办法：</p>
+<p>1.使用安全的网站进行嵌入；</p>
+<p>2.在iframe添加一个叫sandbox的属性，浏览器会对iframe内容进行严格的控制，详细了解可以看看相关的API接口文档。</p>
+<h2 id="HTTP劫持"><a href="#HTTP劫持" class="headerlink" title="HTTP劫持"></a>HTTP劫持</h2><p>核心：广告、弹框html注入<br>描述：当我们访问页面的时候，运营商在页面的HTML代码中，插入弹窗、广告等HTML代码，来获取相应的利益</p>
+<h2 id="本地存储数据问题"><a href="#本地存储数据问题" class="headerlink" title="本地存储数据问题"></a>本地存储数据问题</h2><p>很多开发者为了方便，把一些个人信息不经加密直接存到本地或者cookie，这样是非常不安全的，黑客们可以很容易就拿到用户的信息，所有在放到cookie中的信息或者localStorage里的信息要进行加密，加密可以自己定义一些加密方法或者网上寻找一些加密的插件，或者用base64进行多次加密然后再多次解码，这样就比较安全了。</p>
+<h2 id="第三方依赖安全隐患"><a href="#第三方依赖安全隐患" class="headerlink" title="第三方依赖安全隐患"></a>第三方依赖安全隐患</h2><p>现如今的项目开发，很多都喜欢用别人写好的框架，为了方便快捷，很快的就搭建起项目，自己写的代码不到20%，过多的用第三方依赖或者插件，一方面会影响性能问题，另一方面第三方的依赖或者插件存在很多安全性问题，也会存在这样那样的漏洞，所以使用起来得谨慎。</p>
+<p>解决办法：手动去检查那些依赖的安全性问题基本是不可能的，最好是利用一些自动化的工具进行扫描过后再用，比如NSP(Node Security Platform)，Snyk等等。</p>
+
             </div>
 
             <!-- Post Comments -->
